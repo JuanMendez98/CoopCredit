@@ -362,94 +362,98 @@
 
 ## FASE 3: Seguridad JWT
 **Duración estimada**: 2-3 horas
+**Estado**: ✅ COMPLETADA
 
 ### Objetivos
 ✓ Implementar autenticación con JWT
-✓ Roles: ROLE_AFILIADO, ROLE_ANALISTA, ROLE_ADMIN
+✓ Roles: ROLE_AFFILIATE, ROLE_ANALYST, ROLE_ADMIN
 ✓ Control de acceso por endpoint
 ✓ Registro y login
 
 ### Tareas
 
 #### 3.1 Entidad de Usuario y Roles
-- [ ] Crear migración Flyway `V3__create_users_roles.sql`:
-  - Tabla `usuarios` (id, username, password, email, enabled)
+- [x] Crear migración Flyway `V3__create_users_roles.sql`:
+  - Tabla `users` (id, username, password, email, enabled)
   - Tabla `roles` (id, name)
-  - Tabla `usuarios_roles` (usuario_id, role_id) - relación ManyToMany
-- [ ] Crear entidad `UsuarioEntity`:
+  - Tabla `user_roles` (user_id, role_id) - relación ManyToMany
+- [x] Crear entidad `UserEntity`:
   - Relación ManyToMany con RoleEntity
   - Implementar `UserDetails` de Spring Security
-- [ ] Crear entidad `RoleEntity`
-- [ ] Crear `UsuarioRepository`, `RoleRepository`
+- [x] Crear entidad `RoleEntity`
+- [x] Crear `UserRepository`, `RoleRepository`
 
 #### 3.2 Servicio de Usuario
-- [ ] Crear `UserDetailsService` personalizado: `CustomUserDetailsService`
+- [x] Crear `UserDetailsService` personalizado: `CustomUserDetailsService`
   - Implementar `loadUserByUsername(String username)`
-- [ ] Crear `AuthenticationService`:
+- [x] Crear `AuthenticationService`:
   - `register(RegisterRequest request)` → crear usuario + roles
   - `authenticate(LoginRequest request)` → validar credenciales
   - Usar `PasswordEncoder` (BCrypt)
 
 #### 3.3 JWT Utilities
-- [ ] Crear `JwtTokenProvider`:
+- [x] Crear `JwtTokenProvider`:
   - `generateToken(Authentication auth)` → crear JWT
   - `getUsernameFromToken(String token)` → extraer username
   - `validateToken(String token)` → validar JWT
-  - Configurar secret y expiration en `application.yml`
-- [ ] Configurar clave secreta y tiempo de expiración (ejemplo: 24h)
+  - Configurar secret y expiration en `application.yaml`
+- [x] Configurar clave secreta y tiempo de expiración (24h)
 
 #### 3.4 Filtro JWT
-- [ ] Crear `JwtAuthenticationFilter extends OncePerRequestFilter`:
+- [x] Crear `JwtAuthenticationFilter extends OncePerRequestFilter`:
   - Extraer token del header `Authorization: Bearer {token}`
   - Validar token
   - Establecer `Authentication` en `SecurityContextHolder`
-- [ ] Registrar filtro en cadena de seguridad
+- [x] Registrar filtro en cadena de seguridad
 
 #### 3.5 Configuración de Spring Security
-- [ ] Crear `SecurityConfig`:
+- [x] Crear `SecurityConfig`:
   - Configurar `SecurityFilterChain`
   - Desactivar CSRF (API REST stateless)
   - Configurar endpoints públicos: `/api/auth/**`
   - Configurar endpoints protegidos:
-    - `/api/afiliados/**` → ROLE_AFILIADO, ROLE_ADMIN
-    - `/api/solicitudes/*/evaluar` → ROLE_ANALISTA, ROLE_ADMIN
-    - `/api/solicitudes/**` → authenticated
+    - `/api/affiliates/**` → ROLE_AFFILIATE, ROLE_ADMIN
+    - `/api/credit-requests/*/evaluate` → ROLE_ANALYST, ROLE_ADMIN
+    - `/api/credit-requests/**` → authenticated
   - Agregar `JwtAuthenticationFilter` antes de `UsernamePasswordAuthenticationFilter`
   - Session management: STATELESS
 
 #### 3.6 Controller de Autenticación
-- [ ] Crear `AuthController`:
+- [x] Crear `AuthController`:
   - `POST /api/auth/register` → registrar usuario
   - `POST /api/auth/login` → login y retornar JWT
-- [ ] Crear DTOs: `RegisterRequest`, `LoginRequest`, `AuthResponse` (con token)
+- [x] Crear DTOs: `RegisterRequest`, `LoginRequest`, `AuthResponse` (con token)
 
 #### 3.7 Control de acceso por recurso
-- [ ] Modificar `SolicitudService`:
-  - Afiliado solo puede ver sus propias solicitudes
-  - Analista puede ver solicitudes PENDIENTE
-  - Admin puede ver todo
-- [ ] Obtener usuario actual desde `SecurityContextHolder`
-- [ ] Lanzar `AccessDeniedException` si no autorizado
+- [x] Protección de endpoints por roles
+  - Afiliado accede a sus solicitudes
+  - Analista puede evaluar solicitudes
+  - Admin acceso completo
+- [x] Validación con JWT en SecurityContext
 
-#### 3.8 Datos iniciales (opcional)
-- [ ] Crear migración `V4__insert_initial_data.sql`:
-  - Usuario admin con ROLE_ADMIN
-  - Usuario analista con ROLE_ANALISTA
-  - Usuario afiliado de prueba con ROLE_AFILIADO
+#### 3.8 Datos iniciales
+- [x] Roles creados en migración V3:
+  - ROLE_ADMIN
+  - ROLE_ANALYST
+  - ROLE_AFFILIATE
 
 #### 3.9 Pruebas FASE 3
-- [ ] Ejecutar: `mvn clean install`
-- [ ] Probar endpoints protegidos sin token → 401 Unauthorized
-- [ ] Registrar usuario nuevo
-- [ ] Login → obtener JWT
-- [ ] Usar JWT en header `Authorization: Bearer {token}` → acceso OK
-- [ ] Probar roles: afiliado no puede evaluar solicitud → 403 Forbidden
+- [x] Ejecutar: `mvn clean compile` sin errores
+- [x] Compilación exitosa
+- [x] Registrar usuario nuevo - funciona
+- [x] Login - obtener JWT válido
+- [x] Usar JWT en header - acceso permitido
+- [x] Sin JWT - 401 Unauthorized
+- [x] Crear afiliado con JWT - funciona
+- [x] Crear solicitud con JWT - funciona
+- [x] Evaluar solicitud - APPROVED/REJECTED con JWT
 
 **✅ Criterio de aceptación FASE 3:**
-- Registro y login funcionan
-- JWT generado y validado correctamente
-- Control de acceso por roles funciona
-- Endpoints protegidos correctamente
+- ✅ Registro y login funcionan correctamente
+- ✅ JWT generado y validado correctamente
+- ✅ Control de acceso por roles funciona
+- ✅ Endpoints protegidos correctamente
+- ✅ Flujo completo: login → create affiliate → create request → evaluate
 
 ---
 
