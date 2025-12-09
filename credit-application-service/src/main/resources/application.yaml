@@ -30,6 +30,10 @@ risk:
   service:
     url: ${RISK_SERVICE_URL:http://localhost:8081/api/risk/risk-evaluation}
 
+jwt:
+  secret: ${JWT_SECRET:mySecretKeyThatIsAtLeast256BitsLongForHS256AlgorithmUseInProductionEnv123456}
+  expiration: ${JWT_EXPIRATION:86400000}
+
 logging:
   level:
     com.crudzao.creditapp: INFO
