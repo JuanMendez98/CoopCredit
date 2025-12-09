@@ -8,7 +8,6 @@ import com.crudzao.creditapp.infrastructure.adapters.jpa.repository.AffiliateRep
 import com.crudzao.creditapp.infrastructure.adapters.jpa.repository.CreditRequestRepository;
 import com.crudzao.creditapp.infrastructure.adapters.rest.dto.CreditRequestRequest;
 import com.crudzao.creditapp.infrastructure.adapters.rest.dto.CreditRequestResponse;
-import com.crudzao.creditapp.infrastructure.exception.BusinessException;
 import com.crudzao.creditapp.infrastructure.exception.InvalidStateException;
 import com.crudzao.creditapp.infrastructure.exception.ResourceNotFoundException;
 import lombok.RequiredArgsConstructor;

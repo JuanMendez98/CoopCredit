@@ -26,6 +26,10 @@ spring:
 server:
   port: ${SERVER_PORT:8080}
 
+risk:
+  service:
+    url: ${RISK_SERVICE_URL:http://localhost:8081/api/risk}
+
 logging:
   level:
     com.crudzao.creditapp: INFO

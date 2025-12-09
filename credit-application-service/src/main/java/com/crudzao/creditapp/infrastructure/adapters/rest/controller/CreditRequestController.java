@@ -1,9 +1,11 @@
 package com.crudzao.creditapp.infrastructure.adapters.rest.controller;
 
 import com.crudzao.creditapp.application.services.CreditRequestService;
+import com.crudzao.creditapp.application.services.EvaluateCreditRequestService;
 import com.crudzao.creditapp.domain.enums.CreditRequestStatus;
 import com.crudzao.creditapp.infrastructure.adapters.rest.dto.CreditRequestRequest;
 import com.crudzao.creditapp.infrastructure.adapters.rest.dto.CreditRequestResponse;
+import com.crudzao.creditapp.infrastructure.adapters.rest.dto.RiskEvaluationResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -21,6 +23,7 @@ import java.util.List;
 public class CreditRequestController {
 
     private final CreditRequestService creditRequestService;
+    private final EvaluateCreditRequestService evaluateCreditRequestService;
 
     /**
      * Create a new credit request.
@@ -56,5 +59,14 @@ public class CreditRequestController {
     public ResponseEntity<List<CreditRequestResponse>> getCreditRequestsByStatus(@PathVariable CreditRequestStatus status) {
         List<CreditRequestResponse> responses = creditRequestService.getCreditRequestsByStatus(status);
         return ResponseEntity.ok(responses);
+    }
+
+    /**
+     * Evaluate a credit request (check risk and make approval decision).
+     */
+    @PostMapping("/{id}/evaluate")
+    public ResponseEntity<RiskEvaluationResponse> evaluateCreditRequest(@PathVariable Long id) {
+        RiskEvaluationResponse response = evaluateCreditRequestService.evaluateCreditRequest(id);
+        return ResponseEntity.ok(response);
     }
 }
