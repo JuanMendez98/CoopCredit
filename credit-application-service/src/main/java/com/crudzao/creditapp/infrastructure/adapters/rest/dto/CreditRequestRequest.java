@@ -1,5 +1,6 @@
 package com.crudzao.creditapp.infrastructure.adapters.rest.dto;
 
+import com.crudzao.creditapp.infrastructure.adapters.rest.validator.ValidCreditRequest;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import java.math.BigDecimal;
 /**
  * Credit request creation request DTO.
  */
+@ValidCreditRequest
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
