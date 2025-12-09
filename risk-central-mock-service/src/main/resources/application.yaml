@@ -1,3 +1,10 @@
 spring:
   application:
     name: risk-central-mock-service
+
+server:
+  port: 8081
+
+logging:
+  level:
+    com.crudzaso.riskapp: INFO
