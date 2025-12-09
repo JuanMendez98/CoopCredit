@@ -28,7 +28,7 @@ server:
 
 risk:
   service:
-    url: ${RISK_SERVICE_URL:http://localhost:8081/api/risk}
+    url: ${RISK_SERVICE_URL:http://localhost:8081/api/risk/risk-evaluation}
 
 logging:
   level:
