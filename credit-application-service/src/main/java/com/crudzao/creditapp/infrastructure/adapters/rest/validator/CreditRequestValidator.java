@@ -1,12 +1,14 @@
 package com.crudzao.creditapp.infrastructure.adapters.rest.validator;
 
+import com.crudzao.creditapp.domain.enums.AffiliateStatus;
 import com.crudzao.creditapp.infrastructure.adapters.jpa.repository.AffiliateRepository;
 import com.crudzao.creditapp.infrastructure.adapters.jpa.entity.AffiliateEntity;
 import com.crudzao.creditapp.infrastructure.adapters.rest.dto.CreditRequestRequest;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -22,11 +24,12 @@ import java.util.Optional;
  * - Amount <= 5x salary
  * - Term is between 1 and 360 months
  */
+@Slf4j
 @Component
-@RequiredArgsConstructor
 public class CreditRequestValidator implements ConstraintValidator<ValidCreditRequest, CreditRequestRequest> {
 
-    private final AffiliateRepository affiliateRepository;
+    @Autowired
+    private AffiliateRepository affiliateRepository;
 
     @Override
     public void initialize(ValidCreditRequest constraintAnnotation) {
@@ -38,9 +41,12 @@ public class CreditRequestValidator implements ConstraintValidator<ValidCreditRe
             return true;
         }
 
+        log.info("Validating credit request for affiliate ID: {}", value.getAffiliateId());
+
         Optional<AffiliateEntity> affiliate = affiliateRepository.findById(value.getAffiliateId());
 
         if (affiliate.isEmpty()) {
+            log.warn("Affiliate not found with ID: {}", value.getAffiliateId());
             addConstraintViolation(context, "Affiliate not found");
             return false;
         }
@@ -51,7 +57,9 @@ public class CreditRequestValidator implements ConstraintValidator<ValidCreditRe
         boolean isValid = true;
 
         // Validate affiliate is ACTIVE
-        if (!affiliateEntity.getStatus().toString().equals("ACTIVE")) {
+        log.info("Affiliate status: {} (expected: {})", affiliateEntity.getStatus(), AffiliateStatus.ACTIVE);
+        if (affiliateEntity.getStatus() != AffiliateStatus.ACTIVE) {
+            log.warn("Affiliate is not ACTIVE. Status: {}", affiliateEntity.getStatus());
             addConstraintViolation(context, "Affiliate must be ACTIVE to request credit");
             isValid = false;
         }
