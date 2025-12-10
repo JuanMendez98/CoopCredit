@@ -17,6 +17,7 @@ import java.net.URI;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Global exception handler for REST API.
@@ -102,18 +103,29 @@ public class GlobalExceptionHandler {
             MethodArgumentNotValidException ex, WebRequest request) {
         String traceId = generateTraceId();
 
-        String errors = ex.getBindingResult().getFieldErrors().stream()
+        // Collect field errors
+        String fieldErrors = ex.getBindingResult().getFieldErrors().stream()
                 .map(error -> error.getField() + ": " + error.getDefaultMessage())
                 .collect(Collectors.joining(", "));
 
-        log.warn("[{}] Validation error: {}", traceId, errors);
+        // Collect global errors (from class-level validators like @ValidCreditRequest)
+        String globalErrors = ex.getBindingResult().getGlobalErrors().stream()
+                .map(error -> error.getDefaultMessage())
+                .collect(Collectors.joining(", "));
+
+        // Combine all errors
+        String allErrors = Stream.of(fieldErrors, globalErrors)
+                .filter(s -> !s.isEmpty())
+                .collect(Collectors.joining(", "));
+
+        log.warn("[{}] Validation error: {}", traceId, allErrors);
 
         ProblemDetail problemDetail = ProblemDetail.forStatus(HttpStatus.BAD_REQUEST.value());
         problemDetail.setType(URI.create("https://api.example.com/errors/validation"));
         problemDetail.setTitle("Validation Failed");
-        problemDetail.setDetail("Validation errors: " + errors);
+        problemDetail.setDetail("Validation errors: " + allErrors);
         enrichProblemDetail(problemDetail, request, traceId);
-        problemDetail.setProperty("errors", errors);
+        problemDetail.setProperty("errors", allErrors);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(problemDetail);
     }
