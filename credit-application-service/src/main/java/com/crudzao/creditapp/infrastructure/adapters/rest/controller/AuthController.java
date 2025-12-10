@@ -69,8 +69,13 @@ public class AuthController {
         UserEntity savedUser = userRepository.save(user);
         log.info("User registered successfully: {}", savedUser.getUsername());
 
+        // Auto-login after registration
+        String token = jwtTokenProvider.generateToken(
+            new UsernamePasswordAuthenticationToken(savedUser.getUsername(), registerRequest.getPassword())
+        );
+
         return ResponseEntity.status(HttpStatus.CREATED)
-            .body("User registered successfully");
+            .body(new AuthResponse(token, savedUser.getUsername(), savedUser.getEmail()));
     }
 
     /**
@@ -97,7 +102,7 @@ public class AuthController {
         } catch (Exception e) {
             log.error("Login failed for user: {}", loginRequest.getUsername());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body("Invalid username or password");
+                .body(new AuthResponse(null, null, "Invalid username or password"));
         }
     }
 }
