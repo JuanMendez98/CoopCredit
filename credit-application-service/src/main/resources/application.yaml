@@ -34,6 +34,37 @@ jwt:
   secret: ${JWT_SECRET:mySecretKeyThatIsAtLeast256BitsLongForHS256AlgorithmUseInProductionEnv123456}
   expiration: ${JWT_EXPIRATION:86400000}
 
+springdoc:
+  api-docs:
+    path: /v3/api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    operationsSorter: method
+    tagsSorter: alpha
+    urls-primary-name: API
+    enabled: true
+    doc-expansion: list
+    filter: true
+    show-extensions: true
+    url: /v3/api-docs
+  show-actuator: true
+  use-fqn: true
+  cache:
+    disabled: false
+    ttl: 3600s
+  open-api:
+    title: CoopCredit API
+    description: Credit Application and Risk Assessment System
+    version: "1.0.0"
+    contact:
+      name: CoopCredit Support
+      email: support@coopcredit.com
+      url: https://coopcredit.com
+    license:
+      name: Apache 2.0
+      url: https://www.apache.org/licenses/LICENSE-2.0.html
+    terms-of-service: https://coopcredit.com/terms
+
 logging:
   level:
     com.crudzao.creditapp: INFO
