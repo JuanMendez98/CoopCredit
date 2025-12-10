@@ -1,0 +1,95 @@
+# Archivos de documentación y especificaciones (no parte del proyecto)
+*.md
+*.zip
+*.png
+notes.md
+prueba.md
+image.png
+PLAN_IMPLEMENTACION.md
+
+# Maven
+target/
+.m2/
+*.jar
+*.war
+*.ear
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.maven.metadata.xml
+.factorypath
+
+# IDE
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+.classpathu
+.project
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Session logs and temporary files
+2025-*.txt
+*.txt
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.swo
+*~
+
+# Spring Boot
+application-local.properties
+application-dev.properties
+
+# Build artifacts from Spring Boot DevTools
+.sts4-cache/
+
+# Database files (local dev)
+*.db
+*.sqlite
+*.sqlite3
+
+# Node (if used)
+node_modules/
+dist/
+
+# macOS specific
+.AppleDouble
+.AppleDB
+
+# Maven wrapper (keep the script, exclude downloaded files)
+.mvn/wrapper/maven-wrapper.jar
+.mvn/wrapper/maven-wrapper.properties
+!.mvn/wrapper/maven-wrapper.jar
+!.mvn/wrapper/MavenWrapperDownloader.java
